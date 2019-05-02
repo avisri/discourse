@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GlobalSetting
 
   def self.register(key, default)

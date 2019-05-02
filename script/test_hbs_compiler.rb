@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 template = <<~HBS
   {{attach widget="widget-name" attrs=attrs}}
   {{a}}
