@@ -1672,6 +1672,28 @@ describe Guardian do
     end
   end
 
+  context "can_review_topic?" do
+    it 'returns false with a nil object' do
+      expect(Guardian.new(user).can_review_topic?(nil)).to eq(false)
+    end
+
+    it 'returns true for a staff user' do
+      expect(Guardian.new(moderator).can_review_topic?(topic)).to eq(true)
+    end
+
+    it 'returns false for a regular user' do
+      expect(Guardian.new(user).can_review_topic?(topic)).to eq(false)
+    end
+
+    it 'returns false for a regular user' do
+      SiteSetting.enable_category_group_review = true
+      group = Fabricate(:group)
+      GroupUser.create!(group_id: group.id, user_id: user.id)
+      topic.category.update!(reviewable_by_group_id: group.id)
+      expect(Guardian.new(user).can_review_topic?(topic)).to eq(true)
+    end
+  end
+
   context 'can_move_posts?' do
 
     it 'returns false with a nil object' do

@@ -62,6 +62,8 @@ export function transformBasicPost(post) {
     canRecover: post.can_recover,
     canEdit: post.can_edit,
     canFlag: !Ember.isEmpty(post.get("flagsAvailable")),
+    canReviewTopic: false,
+    flagCount: 0,
     version: post.version,
     canRecoverTopic: false,
     canDeletedTopic: false,
@@ -121,6 +123,7 @@ export default function transformPost(
   postAtts.canViewRawEmail =
     currentUser && (currentUser.id === post.user_id || currentUser.staff);
   postAtts.canReplyAsNewTopic = details.can_reply_as_new_topic;
+  postAtts.canReviewTopic = !!details.can_review_topic;
   postAtts.isWarning = topic.is_warning;
   postAtts.links = post.get("internalLinks");
   postAtts.replyDirectlyBelow =
@@ -214,6 +217,10 @@ export default function transformPost(
         const acted = a.acted;
         const action = a.actionType.name_key;
         const count = a.count;
+
+        if (currentUser && currentUser.staff) {
+          postAtts.flagCount += a.count;
+        }
 
         return {
           id: a.id,
